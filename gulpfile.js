@@ -30,6 +30,10 @@ gulp.task('htmlification', function() {
     return gulp.src('dev/*.html')
     .pipe(gulp.dest('prod'));
 });
+gulp.task('imagification', function() {
+    return gulp.src('dev/img/*')
+    .pipe(gulp.dest('prod/img'));
+});
 gulp.task('jsification', function() {
     // uglify sans pipeline
     return gulp.src('dev/js/*.js')
@@ -52,7 +56,7 @@ gulp.task('browser-sync', function() {
 //-----------------------------------
 // 3 | Exécution des tâches
 //-----------------------------------
-gulp.task('observation', gulp.parallel('browser-sync','sassification','htmlification','jsification', function(){
+gulp.task('observation', gulp.parallel('imagification','browser-sync','sassification','htmlification','jsification', function(){
     //quand il y a un changment dans dev/css il relance la sassification
     gulp.watch('dev/css/**/*.scss', gulp.series('sassification'));
     gulp.watch('dev/*.html', gulp.series('htmlification'));
