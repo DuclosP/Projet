@@ -1,13 +1,14 @@
 //-----------------------------------
 // 1 | Declaration des variables
 //-----------------------------------
-let gulp = require('gulp');
-let sass = require('gulp-sass')(require('sass'));
-let rename = require('gulp-rename');
-let sourcemaps = require('gulp-sourcemaps');
-let autoprefixer = require('gulp-autoprefixer');
-let uglify = require('gulp-uglify');
-let browserSync = require('browser-sync').create();
+let gulp          =             require('gulp');
+let sass          =             require('gulp-sass')(require('sass'));
+let rename        =             require('gulp-rename');
+let sourcemaps    =             require('gulp-sourcemaps');
+let autoprefixer  =             require('gulp-autoprefixer');
+let uglify        =             require('gulp-uglify');
+let browserSync   =             require('browser-sync').create();
+let imagemin      =             require('gulp-imagemin');
 
 
 //-----------------------------------
@@ -31,15 +32,20 @@ gulp.task('htmlification', function() {
     .pipe(gulp.dest('prod'));
 });
 gulp.task('imagification', function() {
-    return gulp.src('dev/img/*')
-    .pipe(gulp.dest('prod/img'));
+    return gulp.src('dev/media/img/*')
+    .pipe(imagemin())
+    .pipe(gulp.dest('prod/media/img'));
 });
+gulp.task('videoification', function(){
+    return gulp.src('dev/media/video/*')
+    .pipe(gulp.dest('prod/media/video'))
+})
 gulp.task('jsification', function() {
     // uglify sans pipeline
     return gulp.src('dev/js/*.js')
     .pipe(uglify()) 
     .pipe(rename(function (path) {
-        // autre façon de rename qui permet d'ajout au nom déjà existant
+        // autre façon de rename qui permet d'ajouté au nom déjà existant
         path.basename += ".min";
       }))
     .pipe(gulp.dest('prod/js'));
@@ -56,8 +62,8 @@ gulp.task('browser-sync', function() {
 //-----------------------------------
 // 3 | Exécution des tâches
 //-----------------------------------
-gulp.task('observation', gulp.parallel('imagification','browser-sync','sassification','htmlification','jsification', function(){
-    //quand il y a un changment dans dev/css il relance la sassification
+gulp.task('observation', gulp.parallel('imagification','videoification','browser-sync','sassification','htmlification','jsification', function(){
+    //quand il y a un changment dans dev/ il relance tout
     gulp.watch('dev/css/**/*.scss', gulp.series('sassification'));
     gulp.watch('dev/*.html', gulp.series('htmlification'));
     gulp.watch('dev/js/*.js', gulp.series('jsification'));
